@@ -62,6 +62,12 @@ return {
         g = {
           -- vim-mark config
           mwDefaultHighlightingPalette = "maximum",
+
+          -- Conjure config
+          ["conjure#client#clojure#nrepl#connection#auto_repl#hidden"] = false,
+          ["conjure#log#hud#open_when"] = "log-win-not-visible",
+          ["conjure#mapping#log_split"] = "lxs",
+          ["conjure#mapping#log_vsplit"] = "lxv",
         },
       },
       mappings = {
@@ -89,6 +95,25 @@ return {
           ["<leader>et"] = {
             function() vim.api.nvim_feedkeys(":tabe " .. vim.fn.expand "%:.:h" .. "/", "n", false) end,
             desc = "New tab and edit file",
+          },
+
+          ["<Leader>lv"] = {
+            function()
+              vim.cmd "ConjureLogVSplit"
+              vim.cmd "setlocal winfixwidth"
+              vim.cmd "vertical resize 80"
+              vim.cmd "wincmd p"
+            end,
+            desc = "Open Conjure log in vertical split",
+          },
+          ["<Leader>ls"] = {
+            function()
+              vim.cmd "ConjureLogSplit"
+              vim.cmd "setlocal winfixheight"
+              vim.cmd "resize 12"
+              vim.cmd "wincmd p"
+            end,
+            desc = "Open Conjure log in horizontal split",
           },
         },
         t = {
