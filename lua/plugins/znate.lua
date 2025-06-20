@@ -31,6 +31,24 @@ return {
   },
   { "AstroNvim/astrocommunity", { import = "astrocommunity.recipes.disable-tabline" } },
   {
+    "AstroNvim/astrolsp",
+    opts = {
+      formatting = {
+        format_on_save = {
+          enabled = true,
+          -- enable format on save for specified filetypes only
+          -- allow_filetypes = {
+          --   "go",
+          -- },
+          -- disable format on save for specified filetypes
+          ignore_filetypes = {
+            "clojure",
+          },
+        },
+      },
+    },
+  },
+  {
     "AstroNvim/astrocore",
     ---@type AstroCoreOpts
     opts = {
