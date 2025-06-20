@@ -29,7 +29,11 @@ return {
       -- dashboard = { enabled = false },
     },
   },
-  { "AstroNvim/astrocommunity", { import = "astrocommunity.recipes.disable-tabline" } },
+  {
+    "AstroNvim/astrocommunity",
+    { import = "astrocommunity.recipes.disable-tabline" },
+    { import = "astrocommunity.lsp.lspsaga-nvim" },
+  },
   {
     "AstroNvim/astrolsp",
     opts = {
@@ -68,6 +72,8 @@ return {
           ["conjure#log#hud#open_when"] = "log-win-not-visible",
           ["conjure#mapping#log_split"] = "lxs",
           ["conjure#mapping#log_vsplit"] = "lxv",
+          ["conjure#log#hud#enabled"] = true,
+          ["conjure#client#clojure#nrepl#test#runner"] = "clojure",
         },
       },
       mappings = {
@@ -115,6 +121,9 @@ return {
             end,
             desc = "Open Conjure log in horizontal split",
           },
+
+          -- LSP Saga
+          ["<Leader>K"] = { ":Lspsaga hover_doc<cr>" },
         },
         t = {
           -- terminal mode key bindings
