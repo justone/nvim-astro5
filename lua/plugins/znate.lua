@@ -1,7 +1,13 @@
 return {
+  -- Disabled plugins
   { "folke/noice.nvim", enabled = false },
   { "mg979/vim-visual-multi", enabled = false },
+  { "dundalek/parpar.nvim", enabled = false },
+  { "gpanders/nvim-parinfer", enabled = false },
+
+  -- My plugins
   { "justone/vim-pmb", lazy = false },
+  { "gcmt/taboo.vim", lazy = false },
   {
     "inkarkat/vim-mark",
     dependencies = { "inkarkat/vim-ingo-library" },
