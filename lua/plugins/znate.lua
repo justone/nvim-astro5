@@ -8,6 +8,15 @@ return {
   -- My plugins
   { "justone/vim-pmb", lazy = false },
   { "gcmt/taboo.vim", lazy = false },
+  { import = "astrocommunity.colorscheme.aurora" },
+  ---@type LazySpec
+  {
+    "AstroNvim/astroui",
+    ---@type AstroUIOpts
+    opts = {
+      colorscheme = "aurora",
+    },
+  },
   {
     "inkarkat/vim-mark",
     dependencies = { "inkarkat/vim-ingo-library" },
@@ -74,6 +83,9 @@ return {
           ["conjure#mapping#log_vsplit"] = "lxv",
           ["conjure#log#hud#enabled"] = true,
           ["conjure#client#clojure#nrepl#test#runner"] = "clojure",
+
+          -- Aurora color scheme
+          aurora_transparent = 1,
         },
       },
       mappings = {
