@@ -58,6 +58,7 @@ return {
           mouse = "nvi",
           number = false,
           relativenumber = false,
+          scrolloff = 5,
         },
         g = {
           -- vim-mark config
@@ -80,6 +81,16 @@ return {
           -- Tab navigation
           ["<C-N>"] = { ":tabnext<CR>" },
           ["<C-P>"] = { ":tabprev<CR>" },
+
+          -- Scroll faster
+          ["<C-e>"] = { "3<C-e>" },
+          ["<C-y>"] = { "3<C-y>" },
+
+          -- Keep cursor in the middle of the screen when scrolling or navigating search matches
+          ["<C-u>"] = { "<C-u>zz" },
+          ["<C-d>"] = { "<C-d>zz" },
+          ["n"] = { "nzz" },
+          ["N"] = { "Nzz" },
 
           -- Easily toggle folds
           ["<space>"] = { "za" },
