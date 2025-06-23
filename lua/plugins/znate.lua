@@ -12,15 +12,6 @@ return {
   -- My plugins
   { "justone/vim-pmb", lazy = false },
   { "gcmt/taboo.vim", lazy = false },
-  { import = "astrocommunity.colorscheme.aurora" },
-  ---@type LazySpec
-  {
-    "AstroNvim/astroui",
-    ---@type AstroUIOpts
-    opts = {
-      colorscheme = "aurora",
-    },
-  },
   {
     "inkarkat/vim-mark",
     dependencies = { "inkarkat/vim-ingo-library" },
@@ -35,13 +26,8 @@ return {
       { "<Leader>xr", "<Plug>MarkRegex", desc = "Mark regex", mode = "x" },
     },
   },
-  {
-    "folke/snacks.nvim",
-    opts = {
-      -- notifier = { enabled = false },
-      -- dashboard = { enabled = false },
-    },
-  },
+
+  -- Community overrides
   {
     "AstroNvim/astrocommunity",
     { import = "astrocommunity.recipes.disable-tabline" },
@@ -50,25 +36,18 @@ return {
     { import = "astrocommunity.fuzzy-finder.telescope-nvim" },
     { import = "astrocommunity.completion.nvim-cmp" },
   },
-  { "nvimdev/lspsaga.nvim", opts = { lightbulb = { enable = false } } },
+
+  -- Setting the colorscheme
+  { import = "astrocommunity.colorscheme.aurora" },
+  ---@type LazySpec
   {
-    "AstroNvim/astrolsp",
+    "AstroNvim/astroui",
+    ---@type AstroUIOpts
     opts = {
-      formatting = {
-        format_on_save = {
-          enabled = true,
-          -- enable format on save for specified filetypes only
-          -- allow_filetypes = {
-          --   "go",
-          -- },
-          -- disable format on save for specified filetypes
-          ignore_filetypes = {
-            "clojure",
-          },
-        },
-      },
+      colorscheme = "aurora",
     },
   },
+
   {
     "AstroNvim/astrocore",
     ---@type AstroCoreOpts
@@ -123,6 +102,7 @@ return {
             desc = "New tab and edit file",
           },
 
+          -- Custom Conjure split management. Keeps vertical or horizontal split fixed and at a good default height/width
           ["<Leader>lv"] = {
             function()
               vim.cmd "ConjureLogVSplit"
@@ -141,12 +121,11 @@ return {
             end,
             desc = "Open Conjure log in horizontal split",
           },
-
-          -- LSP Saga
-          ["<Leader>K"] = { ":Lspsaga hover_doc<cr>" },
         },
         t = {
           -- terminal mode key bindings
+
+          -- Escape to normal mode easily
           ["jj"] = { "<C-\\><C-n>", silent = true },
         },
         v = {
@@ -154,9 +133,44 @@ return {
         },
         x = {
           -- x mode key bindings
+
+          -- `s` to start surrounding when visually selected
           ["s"] = { "<Plug>(nvim-surround-visual)" },
         },
       },
+    },
+  },
+
+  -- Plugin overrides
+  -- Turn off the end-of-line light bulb
+  { "nvimdev/lspsaga.nvim", opts = { lightbulb = { enable = false } } },
+
+  -- Control which filetypes are automatically formatted on save
+  {
+    "AstroNvim/astrolsp",
+    opts = {
+      formatting = {
+        format_on_save = {
+          enabled = true,
+          -- enable format on save for specified filetypes only
+          -- allow_filetypes = {
+          --   "go",
+          -- },
+          -- disable format on save for specified filetypes
+          ignore_filetypes = {
+            "clojure",
+          },
+        },
+      },
+    },
+  },
+
+  -- For debugging
+  {
+    "folke/snacks.nvim",
+    opts = {
+      -- notifier = { enabled = false },
+      -- dashboard = { enabled = false },
     },
   },
 }
