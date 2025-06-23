@@ -5,6 +5,10 @@ return {
   { "dundalek/parpar.nvim", enabled = false },
   { "gpanders/nvim-parinfer", enabled = false },
 
+  -- Switch back to Obsession
+  { "stevearc/resession.nvim", enabled = false },
+  { "tpope/vim-obsession", cmd = "Obsession" },
+
   -- My plugins
   { "justone/vim-pmb", lazy = false },
   { "gcmt/taboo.vim", lazy = false },
@@ -143,6 +147,10 @@ return {
         },
         v = {
           -- visual mode key bindings
+        },
+        x = {
+          -- x mode key bindings
+          ["s"] = { "<Plug>(nvim-surround-visual)" },
         },
       },
     },
