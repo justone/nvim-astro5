@@ -46,6 +46,8 @@ return {
     "AstroNvim/astrocommunity",
     { import = "astrocommunity.recipes.disable-tabline" },
     { import = "astrocommunity.lsp.lspsaga-nvim" },
+    { import = "astrocommunity.fuzzy-finder.telescope-nvim" },
+    { import = "astrocommunity.completion.nvim-cmp" },
   },
   {
     "AstroNvim/astrolsp",
