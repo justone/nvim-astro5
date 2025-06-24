@@ -1,3 +1,26 @@
+function telescope_multi(prompt_bufnr, methstr)
+  local actions = require "telescope.actions"
+  local action_state = require "telescope.actions.state"
+  local picker = action_state.get_current_picker(prompt_bufnr)
+  local multi_selection = picker:get_multi_selection()
+
+  -- print("Multi-selection count:", #multi_selection)
+  -- for i, entry in ipairs(multi_selection) do
+  --   print("Entry " .. i .. ":", entry.path or entry.filename or entry.value)
+  -- end
+
+  if #multi_selection > 0 then
+    actions.close(prompt_bufnr)
+    for _, entry in ipairs(multi_selection) do
+      local file_path = entry.path or entry.filename or entry.value
+      -- print("Opening in tab:", file_path)
+      if file_path then vim.cmd(methstr .. " " .. vim.fn.fnameescape(file_path)) end
+    end
+  else
+    actions.select_tab(prompt_bufnr)
+  end
+end
+
 return {
   -- Disabled plugins
   { "folke/noice.nvim", enabled = false },
@@ -176,12 +199,34 @@ return {
     },
   },
 
+  -- Add ability to open multi-selected files in multiple splits/vsplits/tabs
+  {
+    "nvim-telescope/telescope.nvim",
+    opts = {
+      defaults = {
+        mappings = {
+          i = {
+            ["<C-t>"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "tabedit") end,
+            ["<C-v>"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "vsplit") end,
+            ["<C-x>"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "split") end,
+          },
+          n = {
+            ["t"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "tabedit") end,
+            ["v"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "vsplit") end,
+            ["x"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "split") end,
+          },
+        },
+      },
+    },
+  },
+
   -- For debugging
   {
     "folke/snacks.nvim",
     opts = {
       -- notifier = { enabled = false },
-      -- dashboard = { enabled = false },
+      -- Disable dashboard, confuses tabs
+      dashboard = { enabled = false },
     },
   },
 }
