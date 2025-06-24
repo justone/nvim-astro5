@@ -107,6 +107,7 @@ return {
         },
       },
       mappings = {
+        -- Normal mode mappings
         n = {
           -- Tab navigation
           ["<C-N>"] = { ":tabnext<CR>" },
@@ -163,18 +164,13 @@ return {
             desc = "Open Conjure log in horizontal split",
           },
         },
-        t = {
-          -- terminal mode key bindings
-
+        t = { -- terminal mode key bindings
           -- Escape to normal mode easily
           ["jj"] = { "<C-\\><C-n>", silent = true },
         },
-        v = {
-          -- visual mode key bindings
+        v = { -- visual mode key bindings
         },
-        x = {
-          -- x mode key bindings
-
+        x = { -- x mode key bindings
           -- `s` to start surrounding when visually selected
           ["s"] = { "<Plug>(nvim-surround-visual)" },
         },
