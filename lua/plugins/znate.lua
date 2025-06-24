@@ -23,10 +23,17 @@ end
 
 return {
   -- Disabled plugins
+  -- Takes over the command line, don't want
   { "folke/noice.nvim", enabled = false },
+  -- Unneeded and conflicts with my tab navigation bindings
   { "mg979/vim-visual-multi", enabled = false },
+
+  -- Disable paredit/parinfer and switch back to vim-sexp/vim-sexp-mappings-for-regular-people
   { "dundalek/parpar.nvim", enabled = false },
   { "gpanders/nvim-parinfer", enabled = false },
+  { "julienvincent/nvim-paredit", enabled = false },
+  { "guns/vim-sexp", ft = { "clojure", "fennel", "scheme", "commonlisp" } },
+  { "tpope/vim-sexp-mappings-for-regular-people", ft = { "clojure", "fennel", "scheme", "commonlisp" } },
 
   -- Switch back to Obsession
   { "stevearc/resession.nvim", enabled = false },
