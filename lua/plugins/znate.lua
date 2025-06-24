@@ -206,11 +206,20 @@ return {
     },
   },
 
-  -- Add ability to open multi-selected files in multiple splits/vsplits/tabs
+  -- Telescope tweaks
   {
     "nvim-telescope/telescope.nvim",
+    keys = {
+      {
+        -- Add binding to only find recent files in local directory
+        "<leader>fl",
+        function() require("telescope.builtin").oldfiles { cwd_only = true } end,
+        desc = "Find history (CWD)",
+      },
+    },
     opts = {
       defaults = {
+        -- Add ability to open multi-selected files in multiple splits/vsplits/tabs
         mappings = {
           i = {
             ["<C-t>"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "tabedit") end,
