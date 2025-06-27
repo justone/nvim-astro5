@@ -17,7 +17,13 @@ function telescope_multi(prompt_bufnr, methstr)
       if file_path then vim.cmd(methstr .. " " .. vim.fn.fnameescape(file_path)) end
     end
   else
-    actions.select_tab(prompt_bufnr)
+    if methstr == "tabedit" then
+      actions.select_tab(prompt_bufnr)
+    elseif methstr == "vsplit" then
+      actions.select_vertical(prompt_bufnr)
+    elseif methstr == "split" then
+      actions.select_horizontal(prompt_bufnr)
+    end
   end
 end
 
@@ -46,6 +52,21 @@ return {
   { "justone/vim-pmb", lazy = false },
   { "gcmt/taboo.vim", lazy = false },
   {
+    "https://github.com/mileszs/ack.vim.git",
+    lazy = false,
+    config = function()
+      vim.cmd "cnoreabbrev Ack Ack!"
+      vim.cmd "cnoreabbrev Rg Ack!"
+      vim.cmd "cnoreabbrev Rgc Ack! --no-ignore-vcs --type clojure --type edn"
+
+      vim.g.ackprg = "rg --vimgrep --smart-case --hidden --glob '!{.git,node_modules}/*'"
+    end,
+    keys = {
+      { "<leader>A", ":Ack!<cr>", desc = "Search for current word" },
+      { "<leader>S", ":Ack!<space>", desc = "Search with Ack" },
+    },
+  },
+  {
     "inkarkat/vim-mark",
     dependencies = { "inkarkat/vim-ingo-library" },
     lazy = false,
@@ -68,6 +89,14 @@ return {
     { import = "astrocommunity.lsp.lsp-signature-nvim" },
     { import = "astrocommunity.fuzzy-finder.telescope-nvim" },
     { import = "astrocommunity.completion.nvim-cmp" },
+    { import = "astrocommunity.recipes.telescope-lsp-mappings" },
+    { import = "astrocommunity.pack.java" },
+
+    { import = "astrocommunity.completion.copilot-vim" },
+    { import = "astrocommunity.completion.copilot-vim-cmp" },
+
+    { import = "astrocommunity.git.octo-nvim" },
+    { import = "astrocommunity.git.mini-diff" },
   },
 
   -- Setting the colorscheme
@@ -169,7 +198,10 @@ return {
         },
         t = { -- terminal mode key bindings
           -- Escape to normal mode easily
-          ["jj"] = { "<C-\\><C-n>", silent = true },
+          ["jf"] = { "<C-\\><C-n>", silent = true },
+
+          -- You might also want to override these common terminal keys
+          ["<C-h>"] = { "<C-h>", desc = "Ctrl-h in terminal" },
         },
         v = { -- visual mode key bindings
         },
@@ -199,6 +231,7 @@ return {
           -- disable format on save for specified filetypes
           ignore_filetypes = {
             "clojure",
+            "xml",
           },
         },
       },
