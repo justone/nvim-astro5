@@ -9,6 +9,13 @@ function telescope_multi(prompt_bufnr, methstr)
   --   print("Entry " .. i .. ":", entry.path or entry.filename or entry.value)
   -- end
 
+  -- Check if current buffer is blank (unnamed and unmodified)
+  local current_buf = vim.fn.bufnr "#"
+  local is_blank_buffer = vim.api.nvim_buf_get_name(current_buf) == ""
+    and not vim.api.nvim_buf_get_option(current_buf, "modified")
+    and vim.api.nvim_buf_line_count(current_buf) == 1
+    and vim.api.nvim_buf_get_lines(current_buf, 0, 1, false)[1] == ""
+
   if #multi_selection > 0 then
     actions.close(prompt_bufnr)
     for _, entry in ipairs(multi_selection) do
@@ -24,6 +31,10 @@ function telescope_multi(prompt_bufnr, methstr)
     elseif methstr == "split" then
       actions.select_horizontal(prompt_bufnr)
     end
+  end
+
+  if is_blank_buffer and vim.api.nvim_buf_is_valid(current_buf) then
+    vim.api.nvim_buf_delete(current_buf, { force = false })
   end
 end
 
@@ -259,6 +270,9 @@ return {
             ["<C-x>"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "split") end,
           },
           n = {
+            ["<C-t>"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "tabedit") end,
+            ["<C-v>"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "vsplit") end,
+            ["<C-x>"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "split") end,
             ["t"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "tabedit") end,
             ["v"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "vsplit") end,
             ["x"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "split") end,
