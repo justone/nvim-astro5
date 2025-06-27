@@ -38,6 +38,18 @@ function telescope_multi(prompt_bufnr, methstr)
   end
 end
 
+-- Open fugitive status on top and within a reasonable height
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "fugitive",
+  callback = function()
+    vim.cmd "wincmd K"
+
+    local line_count = vim.api.nvim_buf_line_count(0)
+    local height = math.min(math.max(line_count + 2, 8), 20)
+    vim.cmd("resize " .. height)
+  end,
+})
+
 -- vim.opt.verbose = 1
 -- vim.lsp.set_log_level "debug"
 
@@ -58,6 +70,15 @@ return {
   -- Switch back to Obsession
   { "stevearc/resession.nvim", enabled = false },
   { "tpope/vim-obsession", cmd = "Obsession" },
+
+  -- Restore the other tpope plugins
+  { "tpope/vim-abolish", lazy = false },
+  { "tpope/vim-eunuch", lazy = false },
+  { "tpope/vim-fugitive", lazy = false },
+  { "tpope/vim-repeat", lazy = false },
+  { "tpope/vim-rhubarb", lazy = false },
+  { "tpope/vim-speeddating", lazy = false },
+  { "tpope/vim-unimpaired", lazy = false },
 
   -- My plugins
   { "justone/vim-pmb", lazy = false },
@@ -278,6 +299,11 @@ return {
             ["x"] = function(prompt_bufnr) telescope_multi(prompt_bufnr, "split") end,
           },
         },
+      },
+      pickers = {
+        find_files = { theme = "ivy" },
+        git_files = { theme = "ivy" },
+        oldfiles = { theme = "ivy" },
       },
     },
   },
