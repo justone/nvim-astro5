@@ -21,6 +21,9 @@ function telescope_multi(prompt_bufnr, methstr)
   end
 end
 
+-- vim.opt.verbose = 1
+-- vim.lsp.set_log_level "debug"
+
 return {
   -- Disabled plugins
   -- Takes over the command line, don't want
