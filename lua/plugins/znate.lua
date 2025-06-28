@@ -244,7 +244,7 @@ return {
         -- Normal mode mappings
         n = {
           -- Disable terminal python split
-          ["<leader>tp"] = false,
+          ["<Leader>tp"] = false,
           -- Disable short close mapping, conflicts with lsp mappings
           ["<Leader>c"] = false,
 
