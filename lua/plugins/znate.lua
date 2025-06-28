@@ -553,7 +553,7 @@ return {
   {
     "folke/snacks.nvim",
     opts = {
-      notifier = { enabled = false },
+      -- notifier = { enabled = false },
       -- Disable dashboard, confuses tabs
       dashboard = { enabled = false },
     },
