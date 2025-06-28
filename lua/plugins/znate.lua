@@ -567,6 +567,7 @@ return {
       -- notifier = { enabled = false },
       -- Disable dashboard, confuses tabs
       dashboard = { enabled = false },
+      input = { enabled = false },
     },
   },
 }
