@@ -120,7 +120,7 @@ return {
   { "tpope/vim-obsession", cmd = "Obsession" },
 
   -- Restore the other tpope plugins
-  -- { "tpope/vim-abolish", lazy = false },
+  { "tpope/vim-abolish", lazy = false },
   { "tpope/vim-eunuch", lazy = false },
   { "tpope/vim-fugitive", lazy = false },
   { "tpope/vim-repeat", lazy = false },
@@ -341,10 +341,11 @@ return {
             desc = "Drag forward (Clojure LSP)",
           },
 
-          ["cr"] = { name = "Clojure Refactor" },
-          ["cre"] = { name = "Extract" },
-          ["cri"] = { name = "Introduce" },
-          ["crm"] = { name = "Move" },
+          -- An attempt to make which-key sub-menus for Clojure LSP commands
+          -- ["cr"] = { name = "Clojure Refactor" },
+          -- ["cre"] = { name = "Extract" },
+          -- ["cri"] = { name = "Introduce" },
+          -- ["crm"] = { name = "Move" },
 
           ["crcc"] = {
             function() simple_clojure_lsp_command "cycle-coll" end,
