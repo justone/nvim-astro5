@@ -245,6 +245,8 @@ return {
         n = {
           -- Disable terminal python split
           ["<leader>tp"] = false,
+          -- Disable short close mapping, conflicts with lsp mappings
+          ["<Leader>c"] = false,
 
           -- Go to definition in a new split
           ["gD"] = {
@@ -331,7 +333,11 @@ return {
             desc = "List available LSP commands",
           },
 
-          -- Converted Clojure LSP mappings for AstroNvim
+          -- Clojure LSP mappings for AstroNvim
+
+          ["<Leader>cr"] = { function() vim.lsp.buf.rename() end, desc = "Rename current symbol" },
+          ["<Leader>cs"] = { function() vim.lsp.buf.references() end, desc = "Search references" },
+
           ["<p"] = {
             function() simple_clojure_lsp_command "drag-backward" end,
             desc = "Drag backward (Clojure LSP)",
@@ -428,7 +434,6 @@ return {
             desc = "Create function (Clojure LSP)",
           },
 
-          -- Prompted Clojure LSP mappings for AstroNvim
           ["crml"] = {
             function() prompted_clojure_lsp_command("move-to-let", "Binding name: ") end,
             desc = "Move to let (Clojure LSP)",
@@ -448,18 +453,19 @@ return {
 
           ["<leader>ci"] = {
             function()
+              local clients = vim.lsp.get_clients { name = "clojure_lsp", bufnr = 0 }
+              if #clients == 0 then
+                vim.notify("clojure-lsp not available", vim.log.levels.WARN)
+                return
+              end
+
+              local client = clients[1]
               local params = {
                 command = "cursor-info",
                 arguments = {},
               }
 
-              vim.lsp.buf_request(0, "workspace/executeCommand", params, function(err, result)
-                if err then
-                  vim.notify("Command failed: " .. tostring(err.message), vim.log.levels.ERROR)
-                else
-                  vim.notify("Cursor info: " .. vim.inspect(result))
-                end
-              end)
+              client.request("workspace/executeCommand", params, nil, 0)
             end,
             desc = "Get cursor info (test command)",
           },
@@ -493,6 +499,10 @@ return {
         n = {
           -- Don't use default LSP definition mapping
           ["gD"] = false,
+
+          -- Don't override conjure log reset
+          ["<Leader>lr"] = false,
+          ["<Leader>lR"] = false,
         },
       },
       formatting = {
