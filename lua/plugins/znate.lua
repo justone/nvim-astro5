@@ -38,6 +38,54 @@ function telescope_multi(prompt_bufnr, methstr)
   end
 end
 
+function simple_clojure_lsp_command(command)
+  local clients = vim.lsp.get_clients { name = "clojure_lsp", bufnr = 0 }
+  if #clients == 0 then
+    vim.notify("clojure-lsp not available", vim.log.levels.WARN)
+    return
+  end
+
+  local client = clients[1]
+  local params = {
+    command = command,
+    arguments = {
+      vim.uri_from_bufnr(0),
+      vim.fn.line "." - 1,
+      vim.fn.col "." - 1,
+    },
+  }
+
+  client.request("workspace/executeCommand", params, nil, 0)
+end
+
+function prompted_clojure_lsp_command(command, prompt_text)
+  local clients = vim.lsp.get_clients { name = "clojure_lsp", bufnr = 0 }
+  if #clients == 0 then
+    vim.notify("clojure-lsp not available", vim.log.levels.WARN)
+    return
+  end
+
+  -- Prompt user for input
+  local user_input = vim.fn.input(prompt_text or "Enter value: ")
+  if user_input == "" then
+    vim.notify("Operation cancelled", vim.log.levels.INFO)
+    return
+  end
+
+  local client = clients[1]
+  local params = {
+    command = command,
+    arguments = {
+      vim.uri_from_bufnr(0),
+      vim.fn.line "." - 1,
+      vim.fn.col "." - 1,
+      user_input,
+    },
+  }
+
+  client.request("workspace/executeCommand", params, nil, 0)
+end
+
 -- Open fugitive status on top and within a reasonable height
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "fugitive",
@@ -72,7 +120,7 @@ return {
   { "tpope/vim-obsession", cmd = "Obsession" },
 
   -- Restore the other tpope plugins
-  { "tpope/vim-abolish", lazy = false },
+  -- { "tpope/vim-abolish", lazy = false },
   { "tpope/vim-eunuch", lazy = false },
   { "tpope/vim-fugitive", lazy = false },
   { "tpope/vim-repeat", lazy = false },
@@ -83,6 +131,28 @@ return {
   -- My plugins
   { "justone/vim-pmb", lazy = false },
   { "gcmt/taboo.vim", lazy = false },
+  {
+    "viniciusgerevini/tmux-runner.vim",
+    cmd = "TmuxRunnerPromptCommand",
+    config = function() vim.g.TmuxRunnerNewRunnerMode = "nearest" end,
+    keys = {
+      { "<leader>tp", ":TmuxRunnerPromptCommand<CR>", desc = "Prompt and run command" },
+      { "<leader>tr", ":TmuxRunnerRunLastCommand<CR>", desc = "Re run last command" },
+      {
+        "<leader>ty",
+        function()
+          vim.cmd "TmuxRunnerStop"
+          vim.cmd "TmuxRunnerRunLastCommand"
+        end,
+        desc = "Interrupt and re-run command",
+      },
+      { "<leader>ti", ":TmuxRunnerInspect<CR>", desc = "Inspect command run" },
+      { "<leader>tx", ":TmuxRunnerClose<CR>", desc = "Close command runner split" },
+      { "<leader>tc", ":TmuxRunnerStop<CR>", desc = "Stop command" },
+      { "<leader>tl", ":TmuxRunnerClear<CR>", desc = "Clear pane" },
+      { "<leader>tz", ":TmuxRunnerZoom<CR>", desc = "Zoom in command runner split" },
+    },
+  },
   {
     "https://github.com/mileszs/ack.vim.git",
     lazy = false,
@@ -173,6 +243,19 @@ return {
       mappings = {
         -- Normal mode mappings
         n = {
+          -- Disable terminal python split
+          ["<leader>tp"] = false,
+
+          -- Go to definition in a new split
+          ["gD"] = {
+            function()
+              vim.cmd "aboveleft split"
+              require("telescope.builtin").lsp_definitions()
+            end,
+            desc = "Go to definition in split with telescope",
+            remap = true,
+          },
+
           -- Tab navigation
           ["<C-N>"] = { ":tabnext<CR>" },
           ["<C-P>"] = { ":tabprev<CR>" },
@@ -227,6 +310,158 @@ return {
             end,
             desc = "Open Conjure log in horizontal split",
           },
+
+          ["<leader>cc"] = {
+            function()
+              local clients = vim.lsp.get_clients { name = "clojure_lsp", bufnr = 0 }
+              if #clients == 0 then
+                vim.notify("clojure-lsp not available", vim.log.levels.WARN)
+                return
+              end
+
+              -- Request server capabilities to see available commands
+              local client = clients[1]
+              if client.server_capabilities.executeCommandProvider then
+                local commands = client.server_capabilities.executeCommandProvider.commands
+                vim.notify("Available commands: " .. vim.inspect(commands))
+              else
+                vim.notify "Server doesn't support executeCommand"
+              end
+            end,
+            desc = "List available LSP commands",
+          },
+
+          -- Converted Clojure LSP mappings for AstroNvim
+          ["<p"] = {
+            function() simple_clojure_lsp_command "drag-backward" end,
+            desc = "Drag backward (Clojure LSP)",
+          },
+          [">p"] = {
+            function() simple_clojure_lsp_command "drag-forward" end,
+            desc = "Drag forward (Clojure LSP)",
+          },
+
+          ["cr"] = { name = "Clojure Refactor" },
+          ["cre"] = { name = "Extract" },
+          ["cri"] = { name = "Introduce" },
+          ["crm"] = { name = "Move" },
+
+          ["crcc"] = {
+            function() simple_clojure_lsp_command "cycle-coll" end,
+            desc = "Cycle collection (Clojure LSP)",
+          },
+          ["crsm"] = {
+            function() simple_clojure_lsp_command "sort-clauses" end,
+            desc = "Sort clauses (Clojure LSP)",
+          },
+          ["crth"] = {
+            function() simple_clojure_lsp_command "thread-first" end,
+            desc = "Thread first (Clojure LSP)",
+          },
+          ["crtt"] = {
+            function() simple_clojure_lsp_command "thread-last" end,
+            desc = "Thread last (Clojure LSP)",
+          },
+          ["crtf"] = {
+            function() simple_clojure_lsp_command "thread-first-all" end,
+            desc = "Thread first all (Clojure LSP)",
+          },
+          ["crtl"] = {
+            function() simple_clojure_lsp_command "thread-last-all" end,
+            desc = "Thread last all (Clojure LSP)",
+          },
+          ["cruw"] = {
+            function() simple_clojure_lsp_command "unwind-thread" end,
+            desc = "Unwind thread (Clojure LSP)",
+          },
+          ["crua"] = {
+            function() simple_clojure_lsp_command "unwind-all" end,
+            desc = "Unwind all (Clojure LSP)",
+          },
+          ["crel"] = {
+            function() simple_clojure_lsp_command "expand-let" end,
+            desc = "Expand let (Clojure LSP)",
+          },
+          ["cram"] = {
+            function() simple_clojure_lsp_command "add-missing-libspec" end,
+            desc = "Add missing libspec (Clojure LSP)",
+          },
+          ["crab"] = {
+            function() simple_clojure_lsp_command "drag-param-backward" end,
+            desc = "Drag param backward (Clojure LSP)",
+          },
+          ["craf"] = {
+            function() simple_clojure_lsp_command "drag-param-forward" end,
+            desc = "Drag param forward (Clojure LSP)",
+          },
+          ["crai"] = {
+            function() simple_clojure_lsp_command "add-missing-import" end,
+            desc = "Add missing import (Clojure LSP)",
+          },
+          ["crcn"] = {
+            function() simple_clojure_lsp_command "clean-ns" end,
+            desc = "Clean namespace (Clojure LSP)",
+          },
+          ["crcp"] = {
+            function() simple_clojure_lsp_command "cycle-privacy" end,
+            desc = "Cycle privacy (Clojure LSP)",
+          },
+          ["crck"] = {
+            function() simple_clojure_lsp_command "cycle-keyword-auto-resolve" end,
+            desc = "Cycle keyword auto-resolve (Clojure LSP)",
+          },
+          ["cris"] = {
+            function() simple_clojure_lsp_command "inline-symbol" end,
+            desc = "Inline symbol (Clojure LSP)",
+          },
+          ["crdk"] = {
+            function() simple_clojure_lsp_command "destructure-keys" end,
+            desc = "Destructure keys (Clojure LSP)",
+          },
+          ["crrk"] = {
+            function() simple_clojure_lsp_command "restructure-keys" end,
+            desc = "Restructure keys (Clojure LSP)",
+          },
+          ["crcf"] = {
+            function() simple_clojure_lsp_command "create-function" end,
+            desc = "Create function (Clojure LSP)",
+          },
+
+          -- Prompted Clojure LSP mappings for AstroNvim
+          ["crml"] = {
+            function() prompted_clojure_lsp_command("move-to-let", "Binding name: ") end,
+            desc = "Move to let (Clojure LSP)",
+          },
+          ["cril"] = {
+            function() prompted_clojure_lsp_command("introduce-let", "Binding name: ") end,
+            desc = "Introduce let (Clojure LSP)",
+          },
+          ["cref"] = {
+            function() prompted_clojure_lsp_command("extract-function", "Function name: ") end,
+            desc = "Extract function (Clojure LSP)",
+          },
+          ["cred"] = {
+            function() prompted_clojure_lsp_command("extract-to-def", "Def name: ") end,
+            desc = "Extract to def (Clojure LSP)",
+          },
+
+          ["<leader>ci"] = {
+            function()
+              local params = {
+                command = "cursor-info",
+                arguments = {},
+              }
+
+              vim.lsp.buf_request(0, "workspace/executeCommand", params, function(err, result)
+                if err then
+                  vim.notify("Command failed: " .. tostring(err.message), vim.log.levels.ERROR)
+                else
+                  vim.notify("Cursor info: " .. vim.inspect(result))
+                end
+              end)
+            end,
+            desc = "Get cursor info (test command)",
+          },
         },
         t = { -- terminal mode key bindings
           -- Escape to normal mode easily
@@ -253,6 +488,12 @@ return {
   {
     "AstroNvim/astrolsp",
     opts = {
+      mappings = {
+        n = {
+          -- Don't use default LSP definition mapping
+          ["gD"] = false,
+        },
+      },
       formatting = {
         format_on_save = {
           enabled = true,
@@ -312,7 +553,7 @@ return {
   {
     "folke/snacks.nvim",
     opts = {
-      -- notifier = { enabled = false },
+      notifier = { enabled = false },
       -- Disable dashboard, confuses tabs
       dashboard = { enabled = false },
     },
