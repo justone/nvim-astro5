@@ -80,8 +80,12 @@ return {
       -- indent guides - disable by default
       indent = { enabled = false },
 
-      -- log level: TRACE DEBUG ERROR WARN INFO  OFF
-      notifier = { level = vim.log.levels.WARN },
+      notifier = {
+        -- log level: TRACE DEBUG ERROR WARN INFO  OFF
+        level = vim.log.levels.WARN,
+        -- wrap words in picker right panel
+        win = { preview = { wo = { wrap = true } } },
+      },
     },
   },
   -- ------------------------------------------
