@@ -36,3 +36,6 @@
 !.gitignore
 !.github/
 # ------------------------
+
+# Lazy's lockfile
+!lazy-lock.json
