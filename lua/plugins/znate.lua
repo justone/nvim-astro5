@@ -115,6 +115,10 @@ return {
   { "guns/vim-sexp", ft = { "clojure", "fennel", "scheme", "commonlisp" } },
   { "tpope/vim-sexp-mappings-for-regular-people", ft = { "clojure", "fennel", "scheme", "commonlisp" } },
 
+  -- Disable autopairs, go back to auto-pairs as it's more reliable
+  { "windwp/nvim-autopairs", enabled = false },
+  { "jiangmiao/auto-pairs", lazy = false },
+
   -- Switch back to Obsession
   { "stevearc/resession.nvim", enabled = false },
   { "tpope/vim-obsession", cmd = "Obsession" },
