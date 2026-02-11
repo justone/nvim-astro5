@@ -138,7 +138,10 @@ return {
   {
     "viniciusgerevini/tmux-runner.vim",
     cmd = "TmuxRunnerPromptCommand",
-    config = function() vim.g.TmuxRunnerNewRunnerMode = "nearest" end,
+    config = function()
+      vim.g.TmuxRunnerNewRunnerMode = "nearest"
+      -- vim.g.TmuxRunnerSize = 13
+    end,
     keys = {
       { "<leader>tp", ":TmuxRunnerPromptCommand<CR>", desc = "Prompt and run command" },
       { "<leader>tr", ":TmuxRunnerRunLastCommand<CR>", desc = "Re run last command" },
@@ -156,6 +159,10 @@ return {
       { "<leader>tl", ":TmuxRunnerClear<CR>", desc = "Clear pane" },
       { "<leader>tz", ":TmuxRunnerZoom<CR>", desc = "Zoom in command runner split" },
     },
+  },
+  {
+    "mbbill/undotree",
+    cmd = "UndotreeToggle",
   },
   {
     "https://github.com/mileszs/ack.vim.git",
@@ -520,6 +527,8 @@ return {
           ignore_filetypes = {
             "clojure",
             "xml",
+            "yaml",
+            "json",
           },
         },
       },
