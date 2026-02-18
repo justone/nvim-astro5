@@ -19,6 +19,11 @@ return {
       { "<LocalLeader>t", group = "Test" },
       { "<LocalLeader>v", group = "Values" },
       { "<LocalLeader>x", group = "macroXpand" },
+      -- Portal
+      { "<LocalLeader>pw", group = "Portal" },
+      { "<LocalLeader>pwc", "<cmd>ConjureEval (p/c)<cr>", desc = "Clear portal view", mode = "n" },
+      { "<LocalLeader>pwo", "<cmd>ConjureEval (p/o)<cr>", desc = "Open portal view", mode = "n" },
+      { "<LocalLeader>pwx", "<cmd>ConjureEval (p/x)<cr>", desc = "Close portal view", mode = "n" },
       -- Structural Editing
       { "<localleader>p", "<cmd>ParinferToggle<cr>", desc = "Toggle Parinfer", mode = "n" },
     },
