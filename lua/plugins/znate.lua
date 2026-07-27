@@ -86,15 +86,30 @@ function prompted_clojure_lsp_command(command, prompt_text)
   client.request("workspace/executeCommand", params, nil, 0)
 end
 
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    vim.opt.diffopt = vim.tbl_filter(
+      function(v) return not vim.startswith(v, "linematch") and not vim.startswith(v, "algorithm:") end,
+      vim.opt.diffopt:get()
+    )
+    vim.opt.diffopt:append "vertical"
+    vim.opt.diffopt:append "algorithm:histogram"
+  end,
+})
+
 -- Open fugitive status on top and within a reasonable height
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "fugitive",
   callback = function()
-    vim.cmd "wincmd K"
-
-    local line_count = vim.api.nvim_buf_line_count(0)
-    local height = math.min(math.max(line_count + 2, 8), 20)
-    vim.cmd("resize " .. height)
+    local buf = vim.api.nvim_get_current_buf()
+    vim.schedule(function()
+      if not vim.api.nvim_buf_is_valid(buf) then return end
+      vim.cmd "wincmd K"
+      local line_count = vim.api.nvim_buf_line_count(buf)
+      local height = math.min(math.max(line_count + 2, 8), 20)
+      vim.cmd("resize " .. height)
+    end)
   end,
 })
 
